@@ -45,7 +45,7 @@ def komorbid_view(request):
     elif request.session['peran'] == 'ADMIN':
         with connection.cursor() as cursor:
             cursor.execute(f'''
-                SELECT * FROM PENGGALANGAN_DANA_PD JOIN KOMORBID ON id = idpd
+                SELECT DISTINCT judul, penyakit, komorbid FROM PENGGALANGAN_DANA_PD JOIN KOMORBID ON id = idpd
                 NATURAL JOIN PASIEN NATURAL JOIN PD_KESEHATAN;
                 ''')
             data_komorbid_all = cursor.fetchall()
@@ -54,13 +54,13 @@ def komorbid_view(request):
         num1 = 1
         for i in data_komorbid_all:
             if num1 < 10:
-                temp = ('K-00'+str(num1), i[2], i[18], i[24])
+                temp = ('K-00'+str(num1), i[0], i[1], i[2])
                 num1 = + 1
             elif num1 < 100:
-                temp = ('K-0'+str(num1), i[2], i[18], i[24])
+                temp = ('K-0'+str(num1), i[0], i[1], i[2])
                 num1 = +1
             else:
-                temp = ('K-'+str(num1), i[2], i[18], i[24])
+                temp = ('K-'+str(num1), i[0], i[1], i[2])
                 num1 = + 1
             data_organized_all.append(temp)
         response['title1'] = 'Daftar Penyakit Komorbid'

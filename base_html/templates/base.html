@@ -45,12 +45,17 @@
             {% if request.session.peran == 'PENGGALANG DANA' or request.session.peran == 'ADMIN' %}
             <a class="dropdown-item" href="{% url 'list_penggalangan' %}">Daftar Penggalangan Dana</a>
             {% endif %}
+            {% if request.session.peran == 'ADMIN' %}
+            <a class="dropdown-item" href="{% url 'komorbid' %}">Daftar Penyakit Komorbid</a>
+            {% endif %}
             {% if request.session.peran == 'PENGGALANG DANA' %}
             <a class="dropdown-item" href="{% url 'kategori' %}">Buat Penggalangan Dana</a>
+            <a class="dropdown-item" href="{% url 'komorbid' %}">Kelola Penyakit Komorbid</a>
             {% endif %}
           </div>
         </li>
         {% endif %}
+        
 
         
     </div> 
