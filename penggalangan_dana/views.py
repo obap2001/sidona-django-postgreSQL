@@ -499,6 +499,7 @@ def list_penggalangan(request):
     response['title'] = 'Data Penggalangan Dana Pribadi'
     response['title1'] = 'Data Penggalangan Dana'
     response['jumlah'] = data_organized.__len__()
+    response['jumlah1'] = data_organized1.__len__()
     response['aktif'] = jumlah_aktif
     return render(request, 'list_penggalangan.html', response)
 

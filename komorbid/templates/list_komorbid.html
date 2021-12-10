@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title> Daftar Komorbid </title>
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+{% if request.session.peran == 'PENGGALANG DANA' %}
+<h1 style="text-align: center;margin-top: 50pt;">{{ title }}</h1>
+
+<table class="table">
+    <a class="btn btn-primary" href="{% url 'add_komorbid' email=email %}" role="button">Tambah Data Komorbid</a>
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Judul</th>
+            <th scope="col">Penyakit Utama</th>
+            <th scope="col">Penyakit Komorbid</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in data_komorbid %}
+        <tr>
+        <th>{{ i.0 }}</th>
+        <td >{{ i.1 }}</td>
+        <td >{{ i.2 }}</td>
+        <td >{{ i.3 }}</td>
+        <td>
+            <span><a class="btn btn-primary" href="{% url 'detail_penggalangan'  id=i.1 %}" role="button">Detail</a>
+            <a class="btn btn-primary" href="{% url 'delete_penggalangan' kategori=request.session.kategori id=i.1 %}" role="button">Delete</a>
+            </span>
+        </td>
+    </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% if request.session.peran != 'PENGGALANG DANA' %}
+    <h1 style="text-align: center;margin-top: 50pt;">{{ title1 }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Judul</th>
+                <th scope="col">Penyakit Utama</th>
+                <th scope="col">Penyakit Komorbid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in data_komorbid_all %}
+            <tr>
+            <th>{{ i.0 }}</th>
+            <td >{{ i.1 }}</td>
+            <td >{{ i.2 }}</td>
+            <td>{{ i.3 }}</td>
+        </tr>
+            {% endfor %}
+        </tbody>
+    
+</table>
+{% endif %}
+    {% endblock content %}

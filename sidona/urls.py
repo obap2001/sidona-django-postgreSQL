@@ -26,5 +26,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('penggalangan_dana/', include('penggalangan_dana.urls')),
+    path('komorbid/', include('komorbid.urls')),
 
 ]

@@ -1,7 +1,7 @@
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
-from django.db import connection, InternalError
+from django.db import connection, InternalError, reset_queries
 from .forms import adminRegisterForm, penggalangRegisterForm, individuRegisterForm, organisasiRegisterForm
 from login.views import login
 
@@ -74,15 +74,10 @@ def registerAdmin(request):
 def registerPenggalang(request):
     response = {}
     form = penggalangRegisterForm(request.POST or None)
-    form1 = individuRegisterForm(request.POST or None)
-    form2 = organisasiRegisterForm(request.POST or None)
     response['form'] = form
-    response['form1'] = form1
-    response['form2'] = form2
     response['title'] = 'Register Penggalang Dana'
-    response['title1'] = 'Register Penggalang Dana Individu'
-    response['title2'] = 'Register Penggalang Dana Organisasi'
-    if request.method == 'POST' and form.is_valid() and (form1.is_valid() or form2.is_valid()):
+
+    if request.method == 'POST' and form.is_valid():
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']
         nama = form.cleaned_data['nama']
@@ -91,17 +86,6 @@ def registerPenggalang(request):
         namaBank = form.cleaned_data['namaBank']
         jenis = form.cleaned_data['jenis']
         norek = form.cleaned_data['noRekening']
-        if jenis == 'INDIVIDU':
-            nik = form1.cleaned_data['nik']
-            tglLahir = form1.cleaned_data['tglLahir']
-            jenisKelamin = form1.cleaned_data['jenisKelamin']
-            linkKTP = form1.cleaned_data['linkfotoKTP']
-        elif jenis == 'ORGANISASI':
-            namaorg = form2.cleaned_data['namaOrganisasi']
-            noAkta = form2.cleaned_data['noAkta']
-            noTelp = form2.cleaned_data['noAkta']
-            tahun = form2.cleaned_data['noAkta']
-            linkAkta = form2.cleaned_data['noAkta']
 
         # Execute Querry
         with connection.cursor() as cursor:
@@ -112,27 +96,20 @@ def registerPenggalang(request):
                         insert into akun_pengguna values
                         ('{email}', '{password}', 'PENGGALANG DANA', '{nama}');
                         insert into penggalang_dana values
-                        ('{email}','{password}' ,'{nama}','{noHP}','{alamat}', 0, '{norek}', '{namaBank}', '{linkKTP}', 0, 0, 'Belum verifikasi', 'fszantho0@mozilla.org');
-                        insert into individu values
-                        ('{email}', '{nik}', '{tglLahir}', '{jenisKelamin}', 0);
+                        ('{email}','{password}' ,'{nama}','{noHP}','{alamat}', 0, '{norek}', '{namaBank}', '{None}', 0, 0, 'Belum verifikasi', 'fszantho0@mozilla.org');
                         '''
                     )
+                    return redirect('individu', email, password)
                 elif jenis == 'ORGANISASI':
                     cursor.execute(
                         f'''
                         insert into akun_pengguna values
                         ('{email}', '{password}', 'PENGGALANG DANA', '{nama}');
                         insert into penggalang_dana values
-                        ('{email}','{password}' ,'{nama}','{noHP}','{alamat}', 0, '{norek}', '{namaBank}', '{linkAkta}', 0, 0, 'Belum verifikasi', 'fszantho0@mozilla.org');
-                        insert into organisasi values
-                        ('{email}', '{noAkta}', '{namaorg}', '{noTelp}', '{tahun}');
+                        ('{email}','{password}' ,'{nama}','{noHP}','{alamat}', 0, '{norek}', '{namaBank}', '{None}', 0, 0, 'Belum verifikasi', 'fszantho0@mozilla.org');
                         '''
                     )
-                messages.success(
-                    request, 'Berhasil terdaftar sebagai Penggalang Dana')
-                login(request, email, password)
-                return redirect('home')
-
+                    return redirect('organisasi', email, password)
             except InternalError:
                 # Check if user already regitstered or not
                 cursor.execute(
@@ -146,3 +123,87 @@ def registerPenggalang(request):
                         request, 'Maaf, email yang anda gunakan sudah tedaftar.')
 
     return render(request, 'register.html', response)
+
+
+def registerIndividu(request, email, password):
+    response = {}
+    form = individuRegisterForm(request.POST or None)
+
+    response['title'] = 'Pendaftaran Penggalang Dana Individu'
+    response['form'] = form
+
+    if request.method == 'POST' and form.is_valid():
+        nik = form.cleaned_data['nik']
+        tglLahir = form.cleaned_data['tglLahir']
+        jenisKelamin = form.cleaned_data['jenisKelamin']
+        link = form.cleaned_data['linkfotoKTP']
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f'''
+                    insert into individu values
+                    ('{email}', '{nik}', '{tglLahir}', '{jenisKelamin}', 0);
+                    update penggalang_dana set link_repo = '{link}'
+                    where email = '{email}';
+                '''
+                )
+                messages.success(
+                    request, 'Berhasil terdaftar sebagai Penggalang Dana Individu')
+                login(request, email, password)
+                return redirect('home')
+            except InternalError:
+                # Check if user already regitstered or not
+                cursor.execute(
+                    f'''set search_path to sidona;
+                    SELECT nama FROM penggalang_dana
+                    WHERE USERNAME='{email}';'''
+                )
+                data = cursor.fetchone()
+                if data:  # Exception if user already register
+                    messages.error(
+                        request, 'Maaf, email yang anda gunakan sudah tedaftar.')
+
+    return render(request, 'individu.html', response)
+
+
+def registerOrganisasi(request, email, password):
+    response = {}
+    form = organisasiRegisterForm(request.POST or None)
+
+    response['title'] = 'Pendaftaran Penggalang Dana Organisasi'
+    response['form'] = form
+
+    if request.method == 'POST' and form.is_valid():
+        noakta = form.cleaned_data['noAkta']
+        namaorg = form.cleaned_data['namaOrang']
+        notelp = form.cleaned_data['notelp']
+        tahun = form.cleaned_data['tahunBerdiri']
+        link = form.cleaned_data['linkFotoAkta']
+
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f'''
+                    insert into organisasi values
+                    ('{email}', '{noakta}', '{namaorg}', '{notelp}', '{tahun}');
+                    update penggalang_dana set link_repo = '{link}'
+                    where email = '{email}';
+                '''
+                )
+                messages.success(
+                    request, 'Berhasil terdaftar sebagai Penggalang Dana Organisasi')
+                login(request, email, password)
+                return redirect('home')
+            except InternalError:
+                # Check if user already regitstered or not
+                cursor.execute(
+                    f'''set search_path to sidona;
+                    SELECT nama FROM penggalang_dana
+                    WHERE USERNAME='{email}';'''
+                )
+                data = cursor.fetchone()
+                if data:  # Exception if user already register
+                    messages.error(
+                        request, 'Maaf, email yang anda gunakan sudah tedaftar.')
+
+    return render(request, 'organisasi.html', response)

@@ -59,7 +59,7 @@
     </tbody>
     {% endif %}
 </table>
-    {% if request.session.peran == 'ADMIN' %}
+{% if request.session.peran != 'PENGGALANG DANA' %}
     <h1 style="text-align: center;margin-top: 50pt;">{{ title1 }}</h1>
     <table class="table">
         <thead>
@@ -111,8 +111,10 @@
         </tbody>
     {% endif %}
 </table>
+{% if request.session.peran != 'PENGGALANG DANA' %}
+<h5>Jumlah Penggalangan Dana: {{ jumlah1 }}</h5>
+{% elif request.session.peran == 'PENGGALANG DANA' %}
 <h5>Jumlah Penggalangan Dana: {{ jumlah }}</h5>
-{% if request.session.peran == 'PENGGALANG DANA' %}
 <h5>Jumlah Penggalangan Dana Aktif: {{ aktif }}</h5>
 {% endif %}
     {% endblock content %}

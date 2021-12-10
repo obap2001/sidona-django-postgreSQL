@@ -72,7 +72,7 @@ class individuRegisterForm(forms.Form):
 
 
 class organisasiRegisterForm(forms.Form):
-    namaOrganisasi = forms.CharField(max_length=50, required=True)
+    namaOrang = forms.CharField(max_length=50, required=True)
     noAkta = forms.CharField(max_length=20, required=True)
     notelp = forms.CharField(max_length=20, required=True)
     tahunBerdiri = forms.CharField(widget=forms.NumberInput, required=True)

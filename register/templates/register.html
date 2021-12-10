@@ -33,43 +33,15 @@
     <form method = "POST">
         {% csrf_token %}
         {{ form|crispy }}
-        <!-- <label for="jenis">Jenis*</label>
-        <select name="jenis" id="jenis_penggalang" >
-            <option value="INDIVIDU">INDIVIDU</option>
-            <option value="ORGANISASI">ORGANISASI</option>
-        </select> -->
-        {% if title == "Register Pengguna Dana" %}
-        <h2>Data Tambahan</h2>
-        {% endif %}
-        <div class="ext">
-            <span id="form1">
-                {{ form1|crispy }}
-            </span>
-            <span id="form2">{{ form2|crispy }}</span>
-        </div>
+        
+    {% if title == "Register Admin" %}
     <input class="btn btn-light" type="submit" value="Submit">
-    </form>
+    {% elif title == "Register Penggalang Dana" %}
+    <input class="btn btn-light" type="submit" value="Next">
+        {% endif %}
+</form>
 {% endblock %}
 
 {% block extra_script %}
-<script>
-    // var dataTambahanInput = $('.ext');
 
-    // function hideTambahanData(){
-    //     dataTambahanInput.parent().hide();
-    // }
-    var form = $('#form');
-    var form1 = $('#form1');
-    var form2 = $('#form2');
-    $("form-select").on("change", function(){
-        if (form.jenis == 'INDIVIDU'){
-            form2.hide();
-        }else if (form.jenis == 'ORGANISASI'){
-            form1.hide();
-        }
-    });
-$(document).ready(function(){
-
-});
-</script>
 {% endblock extra_script %}

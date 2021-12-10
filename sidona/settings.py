@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'login',
     'penggalangan_dana',
+    'komorbid',
 ]
 
 MIDDLEWARE = [
