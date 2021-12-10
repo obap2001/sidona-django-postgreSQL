@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title> Check Pasien </title>
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+<h1 style="text-align: center;margin-top: 50pt;">{{ title }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-light" name="num" type="submit" value="Next">
+    </form>
+    {% endblock content %}

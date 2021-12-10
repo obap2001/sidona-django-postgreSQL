@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title> {{ title }} </title>
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+{% block content  %}
+    <ul class="nav nav-pills nav-fill">
+    {% if title == "Register Pengguna Dana" %}
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Penggalang Dana</a>
+        </li>
+        {% else %}
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'register_penggalang_dana' %}">Registrasi Penggalang Dana</a>
+        </li>
+    {% endif %}
+
+    {% if title == "Register Admin Sistem" %}
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Admin Sistem</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'register_admin' %}">Registrasi Admin</a>
+        </li>
+    {% endif %}
+    </ul>
+        <hr class="my-4">
+    <h1 class="display-4">{{ title }} </h1>
+    <hr class="my-4">
+    <form method = "POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <!-- <label for="jenis">Jenis*</label>
+        <select name="jenis" id="jenis_penggalang" >
+            <option value="INDIVIDU">INDIVIDU</option>
+            <option value="ORGANISASI">ORGANISASI</option>
+        </select> -->
+        {% if title == "Register Pengguna Dana" %}
+        <h2>Data Tambahan</h2>
+        {% endif %}
+        <div class="ext">
+            <span id="form1">
+                {{ form1|crispy }}
+            </span>
+            <span id="form2">{{ form2|crispy }}</span>
+        </div>
+    <input class="btn btn-light" type="submit" value="Submit">
+    </form>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    // var dataTambahanInput = $('.ext');
+
+    // function hideTambahanData(){
+    //     dataTambahanInput.parent().hide();
+    // }
+    var form = $('#form');
+    var form1 = $('#form1');
+    var form2 = $('#form2');
+    $("form-select").on("change", function(){
+        if (form.jenis == 'INDIVIDU'){
+            form2.hide();
+        }else if (form.jenis == 'ORGANISASI'){
+            form1.hide();
+        }
+    });
+$(document).ready(function(){
+
+});
+</script>
+{% endblock extra_script %}

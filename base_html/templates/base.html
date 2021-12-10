@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block title %}
+  {% endblock title %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- styling scripts -->
+  <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  {% block style %}
+  {% endblock style %}
+</head>
+
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top mx-auto toplink-color">
+    <a class="navbar-brand toplink-color" href="/"><b>SIDONA</b></a>
+    <!-- Toggle Button for Responsive -->
+    <button class="navbar-toggler collapsed toplink-color" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"><i class="fa fa-align-justify"></i></span>
+    </button>
+    <!-- Start Links -->
+    <div class="collapse navbar-collapse colored" id="navbarNav">
+      <ul class="navbar-nav mr-auto toplink-color">
+        {% if request.session.peran == 'PENGGALANG DANA' or request.session.peran == 'ADMIN' %}
+        <li class="nav-item">
+          <a class="nav-link toplink-color" href="/">Profile</a> <!-- profile can be viewed by anyone -->
+        </li>
+        {% endif %}
+        <!-- Hotel Dropdown Start -->
+        {% if request.session.peran == 'PENGGALANG DANA' or request.session.peran == 'ADMIN' %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Penggalangan Dana
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% if request.session.peran == 'PENGGALANG DANA' or request.session.peran == 'ADMIN' %}
+            <a class="dropdown-item" href="{% url 'list_penggalangan' %}">Daftar Penggalangan Dana</a>
+            {% endif %}
+            {% if request.session.peran == 'PENGGALANG DANA' %}
+            <a class="dropdown-item" href="{% url 'kategori' %}">Buat Penggalangan Dana</a>
+            {% endif %}
+          </div>
+        </li>
+        {% endif %}
+
+        
+    </div> 
+
+    <ul class="navbar-nav ml-auto">
+    {% if request.session.email %}
+      <span class="navbar-text">
+        Halo {{ request.session.peran }} {{ request.session.nama }}! 
+      </span>
+      <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">
+                  Logout
+                </a>
+            </li>
+    {% else %}
+        <li class="nav-item">
+                <a class="nav-link" href="{% url 'register_penggalang_dana' %}">
+                  Register
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">
+                  Login
+                </a>
+            </li>
+    {% endif %}
+        </ul>
+  </nav>
+  <div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-warning" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% load crispy_forms_tags %}
+    {% block content %}
+
+    {% endblock content %}
+  </div>
+  
+  <!-- script js jquery nya bootstrap-->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+  {% block extra_script %}
+  {% endblock extra_script %}
+
+
+</body>
+
+</html>

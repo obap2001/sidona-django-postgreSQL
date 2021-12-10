@@ -1,4 +1,4 @@
-"""sidona URL Configuration
+"""tk4_basdat URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
+from base_html.views import home_view
+from login.views import login_view, logout_view
+from penggalangan_dana.views import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', home_view, name='home'),
+    path('register/', include('register.urls')),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('penggalangan_dana/', include('penggalangan_dana.urls')),
+
 ]

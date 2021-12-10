@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+    <h1 style="text-align: center;margin-top: 50pt;">{{ title }}</h1>
+    <form method="POST">
+        <h3>Informasi Umum Penggalangan Dana</h3>
+            {% csrf_token %}
+            {{ form | crispy }}
+        <h3>Informasi Tambahan Penggalangan Dana</h3>
+            {{ form1 | crispy }}
+        <input class="btn btn-light" name="num" type="submit" value="Create">
+    </form>
+
+
+    {% endblock content %}

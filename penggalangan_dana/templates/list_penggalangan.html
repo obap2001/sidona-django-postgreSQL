@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title> Daftar Penggalangan </title>
+{% endblock title %}
+
+{% block content %}
+{% if request.session.peran == 'PENGGALANG DANA' %}
+<h1 style="text-align: center;margin-top: 50pt;">{{ title }}</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Judul</th>
+            <th scope="col">Kota</th>
+            <th scope="col">Prov</th>
+            <th scope="col">Tanggal Aktif</th>
+            <th scope="col">Deadline</th>
+            <th scope="col">Sisa Hari</th>
+            <th scope="col">Target Dana</th>
+            <th scope="col">Kategori</th>
+            <th scope="col">Status Verifikasi</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in data_penggalangan %}
+        <tr>
+        <th>{{ i.1 }}</th>
+        <td >{{ i.2 }}</td>
+        <td >{{ i.3 }}</td>
+        <td >{{ i.4 }}</td>
+        <td >{{ i.5 }}</td>
+        <td >{{ i.6 }}</td>
+        <td >{{ i.7 }}</td>
+        <td >{{ i.8 }}</td>
+        {% if i.9 == "137758526" %}
+            <td >Pendidikan</td>
+        {% elif i.9 == "366645343" %}
+            <td >Kesehatan</td>
+        {% elif i.9 == "474877486" %}
+            <td >Rumah Ibadah</td>
+        {% elif i.9 == "592725768" %}
+            <td >Bencana</td>
+        {% elif i.9 == "949015855" %}
+            <td >Sosial</td>
+        {% endif %}
+        <td >{{ i.10 }}</td>
+        <td >
+            <span><a class="btn btn-primary" href="{% url 'detail_penggalangan'  id=i.1 %}" role="button">Detail</a>
+            {% if i.10 == 'Terverifikasi' %}
+            <a class="btn btn-primary" href="#" role="button">Cairkan</a>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'delete_penggalangan' kategori=request.session.kategori id=i.1 %}" role="button">Delete</a>
+            {% endif %}</span>
+        </td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    {% endif %}
+</table>
+    {% if request.session.peran == 'ADMIN' %}
+    <h1 style="text-align: center;margin-top: 50pt;">{{ title1 }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Judul</th>
+                <th scope="col">Kota</th>
+                <th scope="col">Prov</th>
+                <th scope="col">Tanggal Aktif</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Sisa Hari</th>
+                <th scope="col">Target Dana</th>
+                <th scope="col">Kategori</th>
+                <th scope="col">Status Verifikasi</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in data_penggalangan1 %}
+            <tr>
+            <th>{{ i.1 }}</th>
+            <td >{{ i.2 }}</td>
+            <td >{{ i.3 }}</td>
+            <td>{{ i.4 }}</td>
+            <td >{{ i.5 }}</td>
+            <td >{{ i.6 }}</td>
+            <td >{{ i.7 }}</td>
+            <td >{{ i.8 }}</td>
+            {% if i.9 == "137758526" %}
+                <th >Pendidikan</th>
+            {% elif i.9 == "366645343" %}
+                <td >Kesehatan</td>
+            {% elif i.9 == "474877486" %}
+                <td >Rumah Ibadah</td>
+            {% elif i.9 == "592725768" %}
+                <td >Bencana</td>
+            {% elif i.9 == "949015855" %}
+                <td >Sosial</td>
+            {% endif %}
+            <td >{{ i.10 }}</td>
+            <td >
+               <span> <a class="btn btn-primary" href="{% url 'detail_penggalangan'  id=i.1 %}" role="button">Detail</a>
+                {% if i.10 == 'Belum Terverifikasi' or i.10 == 'Belum verifikasi' %}
+                <a class="btn btn-primary" href="#" role="button">Verifikasi</a>
+                {% endif %}</span>
+            </td>
+        </tr>
+            {% endfor %}
+        </tbody>
+    {% endif %}
+</table>
+<h5>Jumlah Penggalangan Dana: {{ jumlah }}</h5>
+{% if request.session.peran == 'PENGGALANG DANA' %}
+<h5>Jumlah Penggalangan Dana Aktif: {{ aktif }}</h5>
+{% endif %}
+    {% endblock content %}
