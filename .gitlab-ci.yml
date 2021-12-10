@@ -1,0 +1,41 @@
+image: python:3.8
+stages:
+  - test
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+# Feel free to remove this in your generated project.
+.disable_on_template: &disable_on_template
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "template"'
+
+.django_before_script: &django_before_script |-
+  pip install -r requirements.txt
+  python manage.py collectstatic --no-input
+
+.coverage_artifacts: &coverage_artifacts
+  artifacts:
+    paths:
+      - .coverage*
+
+Deployment:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+  image: ruby:2.7
+  stage: deploy
+  before_script:
+    - gem install dpl
+    - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
+    - export HEROKU_API_KEY=$HEROKU_APIKEY
+    - heroku run --app $HEROKU_APPNAME python manage.py migrate
+  environment:
+    name: production
+    url: $HEROKU_APP_HOST
